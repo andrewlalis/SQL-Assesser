@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="nl.andrewlalis.Window">
+  <grid id="27dc6" binding="mainPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
+    <constraints>
+      <xy x="20" y="20" width="1195" height="814"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <component id="3de6c" class="javax.swing.JLabel">
+        <constraints border-constraint="North"/>
+        <properties>
+          <horizontalAlignment value="0"/>
+          <text value="SQL-Assesser"/>
+        </properties>
+      </component>
+      <grid id="e44a4" binding="inputPanel" layout-manager="GridBagLayout">
+        <constraints border-constraint="Center"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <grid id="bfff3" layout-manager="BorderLayout" hgap="0" vgap="0">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="1.0" weighty="1.0"/>
+            </constraints>
+            <properties/>
+            <border type="bevel-lowered"/>
+            <children>
+              <component id="5a36e" class="javax.swing.JLabel">
+                <constraints border-constraint="North"/>
+                <properties>
+                  <horizontalAlignment value="0"/>
+                  <text value="Template"/>
+                </properties>
+              </component>
+              <scrollpane id="4a4c7">
+                <constraints border-constraint="Center"/>
+                <properties>
+                  <verticalScrollBarPolicy value="22"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <component id="c2e9b" class="javax.swing.JTextArea" binding="templateTextArea">
+                    <constraints/>
+                    <properties>
+                      <text value="select * from primes;"/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
+              <grid id="2493e" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+                <constraints border-constraint="South"/>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="15c71" class="javax.swing.JButton" binding="loadTemplateFromFileButton">
+                    <constraints/>
+                    <properties>
+                      <text value="Load From File"/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
+            </children>
+          </grid>
+          <grid id="ce988" layout-manager="BorderLayout" hgap="0" vgap="0">
+            <constraints>
+              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="1.0" weighty="1.0"/>
+            </constraints>
+            <properties/>
+            <border type="bevel-lowered"/>
+            <children>
+              <component id="e3b9a" class="javax.swing.JLabel">
+                <constraints border-constraint="North"/>
+                <properties>
+                  <horizontalAlignment value="0"/>
+                  <text value="Testing"/>
+                </properties>
+              </component>
+              <scrollpane id="28e0d">
+                <constraints border-constraint="Center"/>
+                <properties>
+                  <verticalScrollBarPolicy value="22"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <component id="17867" class="javax.swing.JTextArea" binding="testingTextArea">
+                    <constraints/>
+                    <properties>
+                      <text value="select * from primes;"/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
+              <grid id="7bdad" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+                <constraints border-constraint="South"/>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="781f9" class="javax.swing.JButton" binding="loadTestingFromFileButton">
+                    <constraints/>
+                    <properties>
+                      <text value="Load From File"/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
+            </children>
+          </grid>
+          <grid id="a5211" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+            <constraints>
+              <grid row="1" column="0" row-span="1" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="1.0" weighty="0.0"/>
+            </constraints>
+            <properties/>
+            <border type="bevel-lowered"/>
+            <children>
+              <grid id="a0bad" layout-manager="BorderLayout" hgap="0" vgap="0">
+                <constraints/>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="1ff5c" class="javax.swing.JLabel">
+                    <constraints border-constraint="North"/>
+                    <properties>
+                      <text value="Host"/>
+                    </properties>
+                  </component>
+                  <component id="99396" class="javax.swing.JTextField" binding="hostTextField">
+                    <constraints border-constraint="Center"/>
+                    <properties>
+                      <text value="localhost"/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
+              <grid id="87583" layout-manager="BorderLayout" hgap="0" vgap="0">
+                <constraints/>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="274c3" class="javax.swing.JLabel">
+                    <constraints border-constraint="North"/>
+                    <properties>
+                      <text value="Port"/>
+                    </properties>
+                  </component>
+                  <component id="44d44" class="javax.swing.JTextField" binding="portTextField">
+                    <constraints border-constraint="Center"/>
+                    <properties>
+                      <text value="5432"/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
+              <grid id="881cf" layout-manager="BorderLayout" hgap="0" vgap="0">
+                <constraints/>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="a2ebb" class="javax.swing.JLabel">
+                    <constraints border-constraint="North"/>
+                    <properties>
+                      <text value="User"/>
+                    </properties>
+                  </component>
+                  <component id="c33e3" class="javax.swing.JTextField" binding="userTextField">
+                    <constraints border-constraint="Center"/>
+                    <properties>
+                      <text value="andrew"/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
+              <grid id="2eb2f" layout-manager="BorderLayout" hgap="0" vgap="0">
+                <constraints/>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="bf4a1" class="javax.swing.JLabel">
+                    <constraints border-constraint="North"/>
+                    <properties>
+                      <text value="Password"/>
+                    </properties>
+                  </component>
+                  <component id="e2839" class="javax.swing.JTextField" binding="passwordTextField">
+                    <constraints border-constraint="Center"/>
+                    <properties>
+                      <text value="root"/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
+            </children>
+          </grid>
+        </children>
+      </grid>
+      <grid id="5241a" binding="outputPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
+        <constraints border-constraint="South"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <grid id="4eed0" layout-manager="BorderLayout" hgap="0" vgap="0">
+            <constraints border-constraint="South"/>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <scrollpane id="adb12" binding="outputScrollPane">
+                <constraints border-constraint="Center"/>
+                <properties>
+                  <preferredSize width="2" height="300"/>
+                  <verticalScrollBarPolicy value="22"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <component id="aca43" class="javax.swing.JTextArea" binding="outputTextArea">
+                    <constraints/>
+                    <properties>
+                      <editable value="false"/>
+                      <lineWrap value="true"/>
+                      <wrapStyleWord value="true"/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
+              <component id="730ad" class="javax.swing.JLabel">
+                <constraints border-constraint="North"/>
+                <properties>
+                  <font style="1"/>
+                  <horizontalAlignment value="0"/>
+                  <text value="General Output"/>
+                </properties>
+              </component>
+              <grid id="6c3b1" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+                <constraints border-constraint="South"/>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="cfab2" class="javax.swing.JButton" binding="executeButton" default-binding="true">
+                    <constraints/>
+                    <properties>
+                      <text value="Execute"/>
+                    </properties>
+                  </component>
+                  <component id="167c9" class="javax.swing.JButton" binding="clearOutputButton" default-binding="true">
+                    <constraints/>
+                    <properties>
+                      <text value="Clear Output"/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
+            </children>
+          </grid>
+          <grid id="4fb1a" layout-manager="GridBagLayout">
+            <constraints border-constraint="Center"/>
+            <properties>
+              <preferredSize width="70" height="200"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <grid id="60b96" layout-manager="BorderLayout" hgap="0" vgap="0">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="1.0" weighty="1.0"/>
+                </constraints>
+                <properties>
+                  <preferredSize width="105" height="300"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <component id="a32af" class="javax.swing.JLabel">
+                    <constraints border-constraint="North"/>
+                    <properties>
+                      <horizontalAlignment value="0"/>
+                      <text value="Template Output"/>
+                    </properties>
+                  </component>
+                  <scrollpane id="ae321">
+                    <constraints border-constraint="Center"/>
+                    <properties>
+                      <verticalScrollBarPolicy value="22"/>
+                    </properties>
+                    <border type="none"/>
+                    <children>
+                      <component id="1e89d" class="javax.swing.JTextArea" binding="templateOutputTextArea">
+                        <constraints/>
+                        <properties>
+                          <editable value="false"/>
+                        </properties>
+                      </component>
+                    </children>
+                  </scrollpane>
+                </children>
+              </grid>
+              <grid id="f3ff1" layout-manager="BorderLayout" hgap="0" vgap="0">
+                <constraints>
+                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="1.0" weighty="1.0"/>
+                </constraints>
+                <properties>
+                  <preferredSize width="93" height="300"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <component id="67bc9" class="javax.swing.JLabel">
+                    <constraints border-constraint="North"/>
+                    <properties>
+                      <horizontalAlignment value="0"/>
+                      <text value="Testing Output"/>
+                    </properties>
+                  </component>
+                  <scrollpane id="c31b2">
+                    <constraints border-constraint="Center"/>
+                    <properties>
+                      <verticalScrollBarPolicy value="22"/>
+                    </properties>
+                    <border type="none"/>
+                    <children>
+                      <component id="f0d22" class="javax.swing.JTextArea" binding="testingOutputTextArea">
+                        <constraints/>
+                        <properties>
+                          <editable value="false"/>
+                        </properties>
+                      </component>
+                    </children>
+                  </scrollpane>
+                </children>
+              </grid>
+            </children>
+          </grid>
+        </children>
+      </grid>
+      <grid id="1e3e8" binding="initializationPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
+        <constraints border-constraint="West"/>
+        <properties/>
+        <border type="bevel-lowered"/>
+        <children>
+          <component id="3f0fa" class="javax.swing.JLabel">
+            <constraints border-constraint="North"/>
+            <properties>
+              <horizontalAlignment value="0"/>
+              <text value="Initialization"/>
+            </properties>
+          </component>
+          <scrollpane id="27433">
+            <constraints border-constraint="Center"/>
+            <properties>
+              <preferredSize width="400" height="18"/>
+              <verticalScrollBarPolicy value="22"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <component id="cc50b" class="javax.swing.JTextArea" binding="initializationTextArea">
+                <constraints/>
+                <properties>
+                  <text value="CREATE TABLE primes (&#10;&#9;id SERIAL NOT NULL,&#10;&#9;value INT NOT NULL&#10;);&#10;&#10;INSERT INTO primes(value) VALUES&#10;(2), (3), (5), (7), (11);" noi18n="true"/>
+                </properties>
+              </component>
+            </children>
+          </scrollpane>
+          <grid id="2ca80" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+            <constraints border-constraint="South"/>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="ffb59" class="javax.swing.JButton" binding="loadInitializationFromFileButton">
+                <constraints/>
+                <properties>
+                  <text value="Load From File"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+        </children>
+      </grid>
+    </children>
+  </grid>
+</form>
