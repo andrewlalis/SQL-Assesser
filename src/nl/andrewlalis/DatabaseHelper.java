@@ -1,5 +1,6 @@
 package nl.andrewlalis;
 
+import nl.andrewlalis.log.ExecutionAction;
 import nl.andrewlalis.log.ExecutionLog;
 import nl.andrewlalis.log.QueryAction;
 import nl.andrewlalis.log.UpdateAction;
@@ -7,6 +8,8 @@ import nl.andrewlalis.log.UpdateAction;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import static nl.andrewlalis.Window.*;
 
 public class DatabaseHelper {
 
@@ -16,24 +19,60 @@ public class DatabaseHelper {
     private String password;
     private Window window;
 
-    private ExecutionLog executionLog;
-
     public DatabaseHelper(String host, int port, String user, String password, Window window) {
         this.host = host;
         this.port = port;
         this.user = user;
         this.password = password;
         this.window = window;
+    }
 
-        this.executionLog = new ExecutionLog();
+    public void executeSQLComparison(String initializationSQL, String templateSQL, String testingSQL) {
+        // Run the database code in a separate thread to update the UI quickly.
+        Thread t = new Thread(() -> {
+            // Setup both databases.
+            this.window.appendOutput("Dropping old databases and re-creating them...");
+            this.window.indentOutput();
+            String dropDatabases = "DROP DATABASE " + DB_TEMPLATE + "; " +
+                    "DROP DATABASE " + DB_TESTING + ";";
+            String createDatabases = "CREATE DATABASE " + DB_TEMPLATE + "; " +
+                    "CREATE DATABASE " + DB_TESTING + ";";
+            this.executeQueries("", dropDatabases);
+            this.executeQueries("", createDatabases);
+            this.window.unindentOutput();
+
+            // Run initialization script on each database.
+            this.window.appendOutput("Running initialization SQL on databases...");
+            this.window.indentOutput();
+            this.executeQueries(DB_TEMPLATE, initializationSQL);
+            this.executeQueries(DB_TESTING, initializationSQL);
+            this.window.unindentOutput();
+
+            // TESTING SQL HERE
+
+            // Template-specific output.
+            this.window.setOutputChannel(OUTPUT_TEMPLATE);
+            ExecutionLog templateLog = this.executeQueries(DB_TEMPLATE, templateSQL);
+
+            // Testing-specific output.
+            this.window.setOutputChannel(OUTPUT_TESTING);
+            ExecutionLog testingLog = this.executeQueries(DB_TESTING, testingSQL);
+
+            // Output results.
+            this.window.setOutputChannel(OUTPUT_GENERAL);
+            this.window.appendOutput("Execution test result: " + templateLog.equals(testingLog));
+        });
+        t.start();
     }
 
     /**
      * Executes possibly many queries which are contained in one string.
      * @param database The database name to connect to, or an empty string to connect to the user's database.
      * @param queriesString The string of queries.
+     * @return The execution log from this series of queries.
      */
-    public void executeQueries(String database, String queriesString) {
+    public ExecutionLog executeQueries(String database, String queriesString) {
+        ExecutionLog executionLog = new ExecutionLog();
         String url = String.format(
                 "jdbc:postgresql://%s:%4d/%s?user=%s&password=%s",
                 host,
@@ -54,7 +93,7 @@ public class DatabaseHelper {
 
             for (String query : queries) {
                 try {
-                    executeQuery(query, st);
+                    executionLog.recordAction(executeQuery(query, st));
                 } catch (SQLException e) {
                     window.appendOutput("Exception while executing statement: " + e.getMessage());
                 }
@@ -67,27 +106,30 @@ public class DatabaseHelper {
             window.appendOutput("Unexpected SQL Exception occurred. URL:\n" + url + "\n\tException: " + e.getMessage() + "\n\tSQL State: " + e.getSQLState());
             window.setOutputChannel(previousChannel);
         }
+
+        return executionLog;
     }
 
     /**
      * Executes a single query and outputs the results.
      * @param query The query to execute. Must be only one query in the string.
      * @param statement The statement used to execute the query.
+     * @return The execution action which was done by executing this query.
      */
-    private void executeQuery(String query, Statement statement) throws SQLException {
+    private ExecutionAction executeQuery(String query, Statement statement) throws SQLException {
         if (isSQLStatementQuery(query)) {
             // A result set is expected.
             window.appendOutput("Executing query:\n" + query);
 
             QueryAction action = new QueryAction(statement.executeQuery(query));
             window.appendOutput(action.toString());
-            this.executionLog.recordAction(action);
+            return action;
         } else {
             // A result set is not expected.
             window.appendOutput("Executing update:\n" + query);
             UpdateAction action = new UpdateAction(statement.executeUpdate(query), query);
             window.appendOutput(action.toString());
-            this.executionLog.recordAction(action);
+            return action;
         }
     }
 

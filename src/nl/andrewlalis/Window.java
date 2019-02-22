@@ -1,6 +1,7 @@
 package nl.andrewlalis;
 
 import javax.swing.*;
+import javax.xml.crypto.Data;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -69,37 +70,8 @@ public class Window extends JFrame {
         String password = this.passwordTextField.getText();
         String initialization = this.initializationTextArea.getText();
 
-        // Run the database code in a separate thread to update the UI quickly.
-        Thread t = new Thread(() -> {
-            DatabaseHelper dbHelper = new DatabaseHelper(host, port, user, password, this);
-
-            // Setup both databases.
-            this.appendOutput("Dropping old databases and re-creating them...");
-            this.indentOutput();
-            String dropDatabases = "DROP DATABASE " + DB_TEMPLATE + "; " +
-                    "DROP DATABASE " + DB_TESTING + ";";
-            String createDatabases = "CREATE DATABASE " + DB_TEMPLATE + "; " +
-                    "CREATE DATABASE " + DB_TESTING + ";";
-            dbHelper.executeQueries("", dropDatabases);
-            dbHelper.executeQueries("", createDatabases);
-            this.unindentOutput();
-
-            // Run initialization script on each database.
-            this.appendOutput("Running initialization SQL on databases...");
-            this.indentOutput();
-            dbHelper.executeQueries(DB_TEMPLATE, initialization);
-            dbHelper.executeQueries(DB_TESTING, initialization);
-            this.unindentOutput();
-
-            // Template-specific output.
-            this.setOutputChannel(OUTPUT_TEMPLATE);
-            dbHelper.executeQueries(DB_TEMPLATE, this.templateTextArea.getText());
-
-            // Testing-specific output.
-            this.setOutputChannel(OUTPUT_TESTING);
-            dbHelper.executeQueries(DB_TESTING, this.testingTextArea.getText());
-        });
-        t.start();
+        DatabaseHelper helper = new DatabaseHelper(host, port, user, password, this);
+        helper.executeSQLComparison(initialization, this.templateTextArea.getText(), this.testingTextArea.getText());
     }
 
     int getOutputChannel() {

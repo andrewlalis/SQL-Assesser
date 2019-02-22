@@ -31,15 +31,17 @@ public class ExecutionLog {
         ExecutionLog otherLog = (ExecutionLog) other;
 
         if (otherLog.getActions().size() != this.getActions().size()) {
+            System.out.println("Size difference in logs.");
             return false;
         }
 
         List<ExecutionAction> otherLogActions = otherLog.getActions();
 
         for (int i = 0; i < this.getActions().size(); i++) {
-            if (!this.getActions().get(i).equals(otherLogActions.get(i))) {
-                return false;
-            }
+            ExecutionAction myAction = this.getActions().get(i);
+            ExecutionAction theirAction = otherLogActions.get(i);
+            System.out.println("My action: " + myAction + "\nTheir action: " + theirAction);
+            System.out.println("\tEqual? " + myAction.equals(theirAction));
         }
 
         return true;

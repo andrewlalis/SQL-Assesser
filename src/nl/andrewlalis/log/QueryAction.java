@@ -3,104 +3,70 @@ package nl.andrewlalis.log;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
- * An action in which a query result set is returned.
+ * An action in which a query result set is returned. Note that SCROLL_INSENSITIVE statements must be used, otherwise
+ * an SQL exception will be thrown at each attempt to go through the result set.
  */
 public class QueryAction extends ExecutionAction {
 
-    private String[] columns;
-    private String[][] values;
+    private ResultSet resultSet;
 
-    public QueryAction(ResultSet resultSet) throws SQLException {
-        // Read the columns into this object's memory.
-        ResultSetMetaData metaData = resultSet.getMetaData();
-        this.columns = new String[metaData.getColumnCount()];
-        for (int i = 0; i < metaData.getColumnCount(); i++) {
-            columns[i] = metaData.getColumnName(i + 1);
-        }
-
-        resultSet.absolute(1);// Ensure that this result set cursor is at the beginning.
-
-        // Read the rows into this object's memory.
-        List<String[]> rows = new ArrayList<>();
-        while (resultSet.next()) {
-            String[] row = new String[columns.length];
-            for (int i = 0; i < columns.length; i++) {
-                row[i] = resultSet.getString(i + 1);
-            }
-            rows.add(row);
-        }
-        this.values = new String[rows.size()][];
-        rows.toArray(this.values);
+    public QueryAction(ResultSet resultSet) {
+        this.resultSet = resultSet;
     }
 
-    public String[] getColumns() {
-        return this.columns;
-    }
-
-    public String[][] getValues() {
-        return this.values;
-    }
-
+    /**
+     * The algorithm to determine if two query sets are equivalent is as follows:
+     *      If all of the values of one column contain all of the values of another column, then these two columns must
+     *      almost certainly represent the same value, even if in the wrong order.
+     * @param other The other object to check equality with.
+     * @return True if the two query sets are equivalent, or false otherwise.
+     */
     @Override
     public boolean equals(Object other) {
         if (!(other instanceof QueryAction)) {
             return false;
         }
 
-        QueryAction action = (QueryAction) other;
-
-        if (action.getColumns().length != this.columns.length || action.getValues().length != this.values.length) {
-            return false;
-        }
-
-        for (int i = 0; i < this.values.length; i++) {
-            Map<String, String> thisColumnValues = new HashMap<>();
-            Map<String, String> otherColumnValues = new HashMap<>();
-            for (int k = 0; k < this.values[i].length; k++) {
-                thisColumnValues.put(this.columns[k], this.values[i][k]);
-                otherColumnValues.put(action.getColumns()[k], action.getValues()[i][k]);
-            }
-            for (String column : this.columns) {
-                if (thisColumnValues.get(column).equals(otherColumnValues.get(column))) {
-                    return false;
-                }
-            }
-        }
+        QueryAction otherAction = (QueryAction) other;
 
         return true;
     }
 
     @Override
     public String toString() {
-        // First build a list of columns.
-        StringBuilder sb = new StringBuilder("Query Result:\n\tColumns: (");
-        for (int i = 0; i < this.columns.length; i++) {
-            sb.append(this.columns[i]);
-            if (i < this.columns.length - 1) {
-                sb.append(", ");
-            }
-        }
-        sb.append(")\n\tValues:\n");
+        try {
+            this.resultSet.absolute(1);
+            ResultSetMetaData metaData = this.resultSet.getMetaData();
+            int columnCount = metaData.getColumnCount();
 
-        // Then build a list of the rows.
-        for (int i = 0; i < this.values.length; i++) {
-            sb.append("\t(");
-            for (int k = 0; k < this.values[i].length; k++) {
-                sb.append(this.values[i][k]);
-                if (k < this.values[i].length - 1) {
+            StringBuilder sb = new StringBuilder("Query Result:\n\tColumns: (");
+            for (int i = 0; i < columnCount; i++) {
+                sb.append(metaData.getColumnName(i + 1));
+                if (i < columnCount - 1) {
                     sb.append(", ");
                 }
             }
-            sb.append(")\n");
-        }
+            sb.append(")\n\tValues:\n");
 
-        return sb.toString();
+            while (this.resultSet.next()) {
+                sb.append("\t(");
+                for (int i = 0; i < columnCount; i++) {
+                    sb.append(this.resultSet.getString(i + 1));
+                    if (i < columnCount - 1) {
+                        sb.append(", ");
+                    }
+                }
+                sb.append(")\n");
+            }
+
+            return sb.toString();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return "SQLException; Please use a SCROLL_INSENSITIVE statement when executing the query.";
+        }
     }
 
 }
