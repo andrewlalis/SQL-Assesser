@@ -11,7 +11,7 @@ import java.util.List;
 
 import static nl.andrewlalis.Window.*;
 
-public class DatabaseHelper {
+class DatabaseHelper {
 
     private String host;
     private int port;
@@ -19,7 +19,7 @@ public class DatabaseHelper {
     private String password;
     private Window window;
 
-    public DatabaseHelper(String host, int port, String user, String password, Window window) {
+    DatabaseHelper(String host, int port, String user, String password, Window window) {
         this.host = host;
         this.port = port;
         this.user = user;
@@ -27,7 +27,7 @@ public class DatabaseHelper {
         this.window = window;
     }
 
-    public void executeSQLComparison(String initializationSQL, String templateSQL, String testingSQL) {
+    void executeSQLComparison(String initializationSQL, String templateSQL, String testingSQL) {
         // Run the database code in a separate thread to update the UI quickly.
         Thread t = new Thread(() -> {
             // Setup both databases.
@@ -37,26 +37,26 @@ public class DatabaseHelper {
                     "DROP DATABASE " + DB_TESTING + ";";
             String createDatabases = "CREATE DATABASE " + DB_TEMPLATE + "; " +
                     "CREATE DATABASE " + DB_TESTING + ";";
-            this.executeQueries("", dropDatabases);
-            this.executeQueries("", createDatabases);
+            this.executeQueries("", dropDatabases, false);
+            this.executeQueries("", createDatabases, false);
             this.window.unindentOutput();
 
             // Run initialization script on each database.
             this.window.appendOutput("Running initialization SQL on databases...");
             this.window.indentOutput();
-            this.executeQueries(DB_TEMPLATE, initializationSQL);
-            this.executeQueries(DB_TESTING, initializationSQL);
+            this.executeQueries(DB_TEMPLATE, initializationSQL, false);
+            this.executeQueries(DB_TESTING, initializationSQL, false);
             this.window.unindentOutput();
 
             // TESTING SQL HERE
 
             // Template-specific output.
             this.window.setOutputChannel(OUTPUT_TEMPLATE);
-            ExecutionLog templateLog = this.executeQueries(DB_TEMPLATE, templateSQL);
+            ExecutionLog templateLog = this.executeQueries(DB_TEMPLATE, templateSQL, true);
 
             // Testing-specific output.
             this.window.setOutputChannel(OUTPUT_TESTING);
-            ExecutionLog testingLog = this.executeQueries(DB_TESTING, testingSQL);
+            ExecutionLog testingLog = this.executeQueries(DB_TESTING, testingSQL, true);
 
             // Output results.
             this.window.setOutputChannel(OUTPUT_GENERAL);
@@ -65,13 +65,30 @@ public class DatabaseHelper {
         t.start();
     }
 
+//    private void listDatabases() {
+//        try {
+//            PreparedStatement ps = connection
+//                    .prepareStatement("SELECT datname FROM pg_database WHERE datistemplate = false;");
+//            ResultSet rs = ps.executeQuery();
+//            while (rs.next()) {
+//                System.out.println(rs.getString(1));
+//            }
+//            rs.close();
+//            ps.close();
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+
     /**
      * Executes possibly many queries which are contained in one string.
      * @param database The database name to connect to, or an empty string to connect to the user's database.
      * @param queriesString The string of queries.
+     * @param safe Whether the queries should be checked for safety.
      * @return The execution log from this series of queries.
      */
-    public ExecutionLog executeQueries(String database, String queriesString) {
+    private ExecutionLog executeQueries(String database, String queriesString, boolean safe) {
         ExecutionLog executionLog = new ExecutionLog();
         String url = String.format(
                 "jdbc:postgresql://%s:%4d/%s?user=%s&password=%s",
@@ -93,7 +110,11 @@ public class DatabaseHelper {
 
             for (String query : queries) {
                 try {
-                    executionLog.recordAction(executeQuery(query, st));
+                    if (!safe || isQuerySafe(query)) {
+                        executionLog.recordAction(executeQuery(query, st));
+                    } else {
+                        window.appendOutput("Blocked execution of unsafe query: " + query);
+                    }
                 } catch (SQLException e) {
                     window.appendOutput("Exception while executing statement: " + e.getMessage());
                 }
@@ -150,6 +171,17 @@ public class DatabaseHelper {
         }
 
         return strings;
+    }
+
+    /**
+     * Determines if the given query is safe to run.
+     * @param query The query to run.
+     * @return True if this query is safe, or false if it would cause damage to the system.
+     */
+    private static boolean isQuerySafe(String query) {
+        String upper = query.trim().toUpperCase();
+        return !upper.startsWith("CREATE DATABASE")
+                && !upper.startsWith("DROP DATABASE");
     }
 
     /**

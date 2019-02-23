@@ -1,9 +1,11 @@
 package nl.andrewlalis;
 
+import nl.andrewlalis.util.FileLoader;
+
 import javax.swing.*;
-import javax.xml.crypto.Data;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.DefaultCaret;
+import java.io.IOException;
 
 public class Window extends JFrame {
     private JPanel mainPanel;
@@ -26,27 +28,34 @@ public class Window extends JFrame {
     private JButton loadTemplateFromFileButton;
     private JButton loadTestingFromFileButton;
     private JButton loadInitializationFromFileButton;
+    private JButton clearTestingButton;
+    private JButton clearTemplateButton;
 
-    public static final int OUTPUT_GENERAL = 0;
-    public static final int OUTPUT_TEMPLATE = 1;
-    public static final int OUTPUT_TESTING = 2;
+    static final int OUTPUT_GENERAL = 0;
+    static final int OUTPUT_TEMPLATE = 1;
+    static final int OUTPUT_TESTING = 2;
 
-    public static final String DB_TEMPLATE = "sql_assess_template";
-    public static final String DB_TESTING = "sql_assess_testing";
+    static final String DB_TEMPLATE = "sql_assess_template";
+    static final String DB_TESTING = "sql_assess_testing";
 
     private int outputChannel;
     private int outputIndent;
 
-    public Window(String applicationName) {
+    Window(String applicationName) {
         super(applicationName);
+
+        // Setup autoscrolling on text areas.
+        DefaultCaret caret = (DefaultCaret) this.outputTextArea.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+
+        // Setup default SQL values.
+        this.fillDefaultSQL();
 
         this.setOutputChannel(OUTPUT_GENERAL);
 
         this.setContentPane(mainPanel);
 
-        executeButton.addActionListener(actionEvent -> {
-            this.executeSQL();
-        });
+        executeButton.addActionListener(actionEvent -> this.executeSQL());
 
         clearOutputButton.addActionListener(actionEvent -> {
             this.templateOutputTextArea.setText(null);
@@ -54,9 +63,11 @@ public class Window extends JFrame {
             this.outputTextArea.setText(null);
         });
 
-        loadInitializationFromFileButton.addActionListener(actionEvent -> {
-
-        });
+        loadInitializationFromFileButton.addActionListener(actionEvent -> this.fillSQLFromFileChooser(this.initializationTextArea));
+        loadTemplateFromFileButton.addActionListener(actionEvent -> this.fillSQLFromFileChooser(this.templateTextArea));
+        loadTestingFromFileButton.addActionListener(actionEvent -> this.fillSQLFromFileChooser(this.testingTextArea));
+        clearTemplateButton.addActionListener(actionEvent -> this.templateTextArea.setText(null));
+        clearTestingButton.addActionListener(actionEvent -> this.testingTextArea.setText(null));
     }
 
     /**
@@ -117,6 +128,29 @@ public class Window extends JFrame {
             case OUTPUT_TESTING:
                 this.testingOutputTextArea.append(result);
                 break;
+        }
+    }
+
+    /**
+     * Fills the input elements from the SQL packaged with this application.
+     */
+    private void fillDefaultSQL() {
+        try {
+            this.initializationTextArea.setText(FileLoader.readResource("initialization.sql"));
+            this.templateTextArea.setText(FileLoader.readResource("template.sql"));
+            this.testingTextArea.setText(FileLoader.readResource("example_test.sql"));
+        } catch (IOException e) {
+            this.appendOutput("Could not load default SQL resources.");
+            e.printStackTrace();
+        }
+    }
+
+    private void fillSQLFromFileChooser(JTextArea textArea) {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileFilter(new FileNameExtensionFilter("SQL", "sql"));
+        int result = fileChooser.showOpenDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            textArea.setText(FileLoader.readFile(fileChooser.getSelectedFile()));
         }
     }
 }

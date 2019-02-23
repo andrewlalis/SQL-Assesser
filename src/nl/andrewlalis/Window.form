@@ -60,6 +60,12 @@
                       <text value="Load From File"/>
                     </properties>
                   </component>
+                  <component id="a7f77" class="javax.swing.JButton" binding="clearTemplateButton">
+                    <constraints/>
+                    <properties>
+                      <text value="Clear"/>
+                    </properties>
+                  </component>
                 </children>
               </grid>
             </children>
@@ -103,6 +109,12 @@
                     <constraints/>
                     <properties>
                       <text value="Load From File"/>
+                    </properties>
+                  </component>
+                  <component id="2fbec" class="javax.swing.JButton" binding="clearTestingButton">
+                    <constraints/>
+                    <properties>
+                      <text value="Clear"/>
                     </properties>
                   </component>
                 </children>
@@ -210,6 +222,7 @@
               <scrollpane id="adb12" binding="outputScrollPane">
                 <constraints border-constraint="Center"/>
                 <properties>
+                  <autoscrolls value="true"/>
                   <preferredSize width="2" height="300"/>
                   <verticalScrollBarPolicy value="22"/>
                 </properties>

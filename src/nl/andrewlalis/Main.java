@@ -4,7 +4,7 @@ import javax.swing.*;
 
 public class Main {
 
-    public static final String APPLICATION_NAME = "SQL-Assesser";
+    private static final String APPLICATION_NAME = "SQL-Assesser";
 
     public static void main(String[] args) {
         Window window = new Window(APPLICATION_NAME);

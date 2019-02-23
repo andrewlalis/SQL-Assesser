@@ -18,7 +18,7 @@ public class ExecutionLog {
         this.actions.add(action);
     }
 
-    public List<ExecutionAction> getActions() {
+    private List<ExecutionAction> getActions() {
         return this.actions;
     }
 
