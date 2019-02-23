@@ -44,7 +44,7 @@
                   <component id="c2e9b" class="javax.swing.JTextArea" binding="templateTextArea">
                     <constraints/>
                     <properties>
-                      <text value="select * from primes;"/>
+                      <text value="select id, value, other_value from primes;"/>
                     </properties>
                   </component>
                 </children>
@@ -89,7 +89,7 @@
                   <component id="17867" class="javax.swing.JTextArea" binding="testingTextArea">
                     <constraints/>
                     <properties>
-                      <text value="select * from primes;"/>
+                      <text value="select value, other_value, id from primes;"/>
                     </properties>
                   </component>
                 </children>
@@ -356,7 +356,7 @@
               <component id="cc50b" class="javax.swing.JTextArea" binding="initializationTextArea">
                 <constraints/>
                 <properties>
-                  <text value="CREATE TABLE primes (&#10;&#9;id SERIAL NOT NULL,&#10;&#9;value INT NOT NULL&#10;);&#10;&#10;INSERT INTO primes(value) VALUES&#10;(2), (3), (5), (7), (11);" noi18n="true"/>
+                  <text value="CREATE TABLE primes (&#10;&#9;id SERIAL NOT NULL,&#10;&#9;value INT NOT NULL,&#10;&#9;other_value TEXT NOT NULL DEFAULT 'fuck'&#10;);&#10;&#10;INSERT INTO primes(value, other_value) VALUES&#10;(2, 'nigger'), (3, 'cunt'), (5, 'piss'), (7, 'shit'), (11, 'spic');" noi18n="true"/>
                 </properties>
               </component>
             </children>

@@ -121,7 +121,7 @@ public class DatabaseHelper {
             // A result set is expected.
             window.appendOutput("Executing query:\n" + query);
 
-            QueryAction action = new QueryAction(statement.executeQuery(query));
+            QueryAction action = new QueryAction(statement.executeQuery(query), isQueryOrdered(query));
             window.appendOutput(action.toString());
             return action;
         } else {
@@ -160,6 +160,15 @@ public class DatabaseHelper {
     private static boolean isSQLStatementQuery(String str) {
         String upper = str.toUpperCase();
         return upper.startsWith("SELECT");
+    }
+
+    /**
+     * Determines if a query is ordered by something.
+     * @param query The query to check.
+     * @return True if the query makes use of the 'ORDER BY' clause.
+     */
+    private static boolean isQueryOrdered(String query) {
+        return query.toUpperCase().contains("ORDER BY");
     }
 
 }

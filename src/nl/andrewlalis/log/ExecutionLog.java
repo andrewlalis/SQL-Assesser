@@ -42,6 +42,9 @@ public class ExecutionLog {
             ExecutionAction theirAction = otherLogActions.get(i);
             System.out.println("My action: " + myAction + "\nTheir action: " + theirAction);
             System.out.println("\tEqual? " + myAction.equals(theirAction));
+            if (!myAction.equals(theirAction)) {
+                return false;
+            }
         }
 
         return true;
