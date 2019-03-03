@@ -169,7 +169,7 @@ public class QueryAction extends ExecutionAction {
             }
             sb.append(")\n\tValues:\n");
 
-            while (this.resultSet.next()) {
+            do {
                 sb.append("\t(");
                 for (int i = 0; i < columnCount; i++) {
                     sb.append(this.resultSet.getString(i + 1));
@@ -178,7 +178,7 @@ public class QueryAction extends ExecutionAction {
                     }
                 }
                 sb.append(")\n");
-            }
+            } while (this.resultSet.next());
 
             return sb.toString();
 
